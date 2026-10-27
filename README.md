@@ -38,3 +38,6 @@ The six painted scenes were generated for this game using the built-in image gen
 ## Accessibility
 
 Cards support keyboard selection with Enter or Space, arrow-key navigation, Escape to clear selection, and live progress announcements. Animations respect reduced-motion preferences.
+
+
+Play the live game: https://puzzle-parade.pages.dev/
