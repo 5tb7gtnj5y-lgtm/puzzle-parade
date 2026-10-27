@@ -4,7 +4,7 @@ A responsive, installable picture-card puzzle game. Drag any two cards to swap t
 
 ## Play
 
-- 306 pictures: 6 original painted scenes and 300 individually seeded vector travel illustrations, in Coast, Gardens, Nature and Places.
+- 324 pictures: 24 original painted scenes and 300 individually seeded vector travel illustrations. New Cats, Dogs and Animals collections each have six traditional jigsaw-style paintings, alongside Coast, Gardens, Nature and Places.
 - Four sizes per picture: 9, 16, 25 or 36 cards. Rewards: 30, 60, 100 or 150 tokens.
 - Timer, completion time and personal best for each picture and difficulty.
 - Beginner at the start of each run, Learner after 3 solves and Expert after 6.
@@ -33,7 +33,7 @@ No API keys or paid AI inference are used while playing. Rivals and the vector i
 
 ## Artwork
 
-The six painted scenes were generated for this game using the built-in image generation tool. Prompt: six detailed storybook travel scenes in a 3-by-2 sheet: harbour, English cottage garden, forest waterfall, winter village, hot-air balloons and nighttime canal. The remaining 300 pictures are original seeded SVG travel illustrations rendered by `illustrations.js`.
+The 24 painted scenes were generated for this game using the built-in image generation tool. Prompt: six detailed storybook travel scenes in a 3-by-2 sheet: harbour, English cottage garden, forest waterfall, winter village, hot-air balloons and nighttime canal. The remaining 300 pictures are original seeded SVG travel illustrations rendered by `illustrations.js`.
 
 ## Accessibility
 
@@ -41,3 +41,5 @@ Cards support keyboard selection with Enter or Space, arrow-key navigation, Esca
 
 
 Play the live game: https://puzzle-parade.pages.dev/
+
+The new painted collections feature kittens, Persian cats, cottage cats, retrievers, pugs, collies, spaniels, dachshunds, fireside dogs, foxes, horses, safari animals, red pandas, birds, rabbits and a hedgehog.

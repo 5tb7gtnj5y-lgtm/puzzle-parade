@@ -1,5 +1,5 @@
-import{EXTRA_SCENES}from'./catalogue.js';
-export const SCENES=[{id:'harbour',name:'Harbour days',category:'Coast',tag:'COASTAL CALM'},{id:'cottage',name:'The little cottage',category:'Gardens',tag:'COUNTRY ESCAPE'},{id:'waterfall',name:'Into the wild',category:'Nature',tag:'A BREATH OF FRESH AIR'},{id:'village',name:'Winter wonder',category:'Places',tag:'COSY CORNERS'},{id:'balloons',name:'Up, up & away',category:'Nature',tag:'DAYDREAM A LITTLE'},{id:'canal',name:'Midnight reflections',category:'Places',tag:'AFTER DARK'},...EXTRA_SCENES];
+import{EXTRA_SCENES,ANIMAL_SCENES}from'./catalogue.js';
+export const SCENES=[...ANIMAL_SCENES,{id:'harbour',name:'Harbour days',category:'Coast',tag:'COASTAL CALM'},{id:'cottage',name:'The little cottage',category:'Gardens',tag:'COUNTRY ESCAPE'},{id:'waterfall',name:'Into the wild',category:'Nature',tag:'A BREATH OF FRESH AIR'},{id:'village',name:'Winter wonder',category:'Places',tag:'COSY CORNERS'},{id:'balloons',name:'Up, up & away',category:'Nature',tag:'DAYDREAM A LITTLE'},{id:'canal',name:'Midnight reflections',category:'Places',tag:'AFTER DARK'},...EXTRA_SCENES];
 export const DIFFICULTIES=[{n:3,name:'Easy',reward:30},{n:4,name:'Medium',reward:60},{n:5,name:'Hard',reward:100},{n:6,name:'Expert',reward:150}];
 export const AVATARS=['🦊','🐼','🐸','🦁','🐨','🐯','🐰','🐻','🦉','🐱','🐶','🦋'];
 export const LEAGUES=['Beginner','Learner','Expert'];
