@@ -1,0 +1,3 @@
+const adjectives=['Amber','Willow','Rose','Silver','Maple','Golden','Misty','Summer','Bluebell','Quiet','Saffron','Cherry','Velvet','Honey','Twilight'];
+const nouns={Coast:['Harbour','Cove','Bay','Lighthouse','Shore'],Gardens:['Cottage','Garden','Orchard','Terrace','Rosewalk'],Nature:['Valley','Falls','Ridge','Meadow','Forest'],Places:['Village','Bridge','Lane','Square','Quayside']};
+export const EXTRA_SCENES=Object.entries(nouns).flatMap(([category,words],ci)=>adjectives.flatMap((adj,ai)=>words.map((noun,ni)=>({id:'escape-'+ci+'-'+ai+'-'+ni,name:adj+' '+noun,category,tag:'ILLUSTRATED ESCAPES',seed:104729+ci*100003+ai*97+ni*691,illustrated:true})))).sort((a,b)=>(a.seed%1009)-(b.seed%1009));
