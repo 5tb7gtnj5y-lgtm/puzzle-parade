@@ -1,5 +1,6 @@
+import{POLISH_SCENES}from'./poland.js';
 import{EXTRA_SCENES,ANIMAL_SCENES}from'./catalogue.js';
-export const SCENES=[...ANIMAL_SCENES,{id:'harbour',name:'Harbour days',category:'Coast',tag:'COASTAL CALM'},{id:'cottage',name:'The little cottage',category:'Gardens',tag:'COUNTRY ESCAPE'},{id:'waterfall',name:'Into the wild',category:'Nature',tag:'A BREATH OF FRESH AIR'},{id:'village',name:'Winter wonder',category:'Places',tag:'COSY CORNERS'},{id:'balloons',name:'Up, up & away',category:'Nature',tag:'DAYDREAM A LITTLE'},{id:'canal',name:'Midnight reflections',category:'Places',tag:'AFTER DARK'},...EXTRA_SCENES];
+export const SCENES=[...POLISH_SCENES,...ANIMAL_SCENES,{id:'harbour',name:'Harbour days',category:'Coast',tag:'COASTAL CALM'},{id:'cottage',name:'The little cottage',category:'Gardens',tag:'COUNTRY ESCAPE'},{id:'waterfall',name:'Into the wild',category:'Nature',tag:'A BREATH OF FRESH AIR'},{id:'village',name:'Winter wonder',category:'Places',tag:'COSY CORNERS'},{id:'balloons',name:'Up, up & away',category:'Nature',tag:'DAYDREAM A LITTLE'},{id:'canal',name:'Midnight reflections',category:'Places',tag:'AFTER DARK'},...EXTRA_SCENES];
 export const DIFFICULTIES=[{n:3,name:'Easy',reward:30},{n:4,name:'Medium',reward:60},{n:5,name:'Hard',reward:100},{n:6,name:'Expert',reward:150}];
 export const AVATARS=['🦊','🐼','🐸','🦁','🐨','🐯','🐰','🐻','🦉','🐱','🐶','🦋'];
 export const LEAGUES=['Beginner','Learner','Expert'];
@@ -19,3 +20,9 @@ export function complete(s,day){const c=s.current;if(!c||c.completed||correctCou
 export function resetRun(s,seed=Date.now()){s.runPoints=0;s.runWins=0;s.runNumber++;s.seed=seed;s.rivals=createRivals(seed);s.current=null;}
 export function tick(s,seconds){if(!Number.isFinite(seconds)||seconds<=0)return;seconds=Math.min(seconds,2);if(s.current&&!s.current.completed)s.current.elapsed+=seconds;for(const b of s.rivals)b.score+=b.rate*seconds*(1+leagueIndex(s)*.25);}
 export function standings(s){return[...s.rivals.map(b=>({...b,score:Math.floor(b.score)})),{id:'you',name:s.name,avatar:s.avatar,score:s.runPoints,style:'That’s you!',mine:true}].sort((a,b)=>b.score-a.score||(a.mine?-1:b.mine?1:a.id-b.id));}
+
+export function searchScenes(category='All',query=''){
+ const normalize=value=>String(value).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ł/g,'l');
+ const q=normalize(query.trim());
+ return SCENES.filter(p=>(category==='All'||p.category===category||(category==='Poland'&&p.country==='Poland'))&&(!q||normalize([p.name,p.category,p.country||'',p.artist||''].join(' ')).includes(q)));
+}
