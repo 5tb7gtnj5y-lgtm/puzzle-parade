@@ -50,3 +50,7 @@ Cards support keyboard selection with Enter or Space, arrow-key navigation, Esca
 Play the live game: https://puzzle-parade.pages.dev/
 
 The new painted collections feature kittens, Persian cats, cottage cats, retrievers, pugs, collies, spaniels, dachshunds, fireside dogs, foxes, horses, safari animals, red pandas, birds, rabbits and a hedgehog.
+
+## Affiliate promotion
+
+A compact shopping-bag icon at the top cycles through the four supplied Amazon affiliate links every 10 seconds. The destination stays fixed while hovered or keyboard-focused, while a game dialog is open, while the disclosure is open, and when the page is hidden. A pause/resume button lets visitors stop rotation. Links open in a separate tab with `sponsored noopener noreferrer`. The visible Ad label and adjacent disclosure identify the promotion. No Amazon scripts, image requests or tracking pixels load with the game. Update destinations in `affiliate.js`.

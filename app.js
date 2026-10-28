@@ -1,3 +1,4 @@
+import{initAffiliatePromotion}from'./affiliate.js';
 import{artwork}from'./illustrations.js';
 import{SCENES,CHALLENGE_COUNT,difficultiesFor,AVATARS,LEAGUES,newState,restoreState,leagueIndex,recommendedSize,startPuzzle,correctCount,swap,hint,complete,resetRun,tick,standings,searchScenes}from'./engine.js';
 const KEY='puzzle-parade-v1';let storageAvailable=true;let state;try{state=restoreState(localStorage.getItem(KEY));}catch{state=newState();storageAvailable=false;}let page=location.hash.slice(1)||'home';if(!['home','league','album','game'].includes(page))page='home';if(page==='game'&&(!state.current||state.current.completed))page='home';let filter='All',libraryLimit=12,albumLimit=24,searchTerm='',selected=null,drag=null,lastTick=performance.now(),lastSave=lastTick,toastTimer,winResult=null;const main=document.querySelector('#main'),modal=document.querySelector('#modal'),modalContent=document.querySelector('#modalContent');
@@ -59,3 +60,5 @@ $('#profileButton').onclick=()=>profile();$('#settingsButton').onclick=settings;
 setInterval(()=>{const now=performance.now(),dt=(now-lastTick)/1000;lastTick=now;if(page==='game'&&!modal.open&&!document.hidden&&state.current&&!state.current.completed){tick(state,dt);document.querySelectorAll('[data-time]').forEach(e=>e.textContent=fmt(state.current.elapsed));document.querySelectorAll('[data-rank]').forEach(e=>e.textContent='#'+rank());if(now-lastSave>10000){save();lastSave=now;}}},1000);document.addEventListener('visibilitychange',()=>{save();lastTick=performance.now();if(document.hidden&&page==='game'&&!modal.open&&!state.current?.completed)pause();});window.addEventListener('pagehide',save);
 render();if(!storageAvailable)toast('Saving is unavailable in this browser. Progress lasts only in this tab.');if(!state.welcomed)setTimeout(()=>profile(true),450);
 if('serviceWorker'in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{});
+
+initAffiliatePromotion();
