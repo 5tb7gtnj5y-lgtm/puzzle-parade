@@ -1,6 +1,6 @@
-import test from'node:test';import assert from'node:assert/strict';import{SCENES,DIFFICULTIES,newState,restoreState,startPuzzle,shuffle,seeded,swap,hint,complete,resetRun,tick,leagueIndex,standings,correctCount,searchScenes}from'./engine.js';import{artwork}from'./illustrations.js';
+import test from'node:test';import assert from'node:assert/strict';import{SCENES,DIFFICULTIES,VERY_HARD_DIFFICULTIES,difficultiesFor,recommendedSize,CHALLENGE_COUNT,newState,restoreState,startPuzzle,shuffle,seeded,swap,hint,complete,resetRun,tick,leagueIndex,standings,correctCount,searchScenes}from'./engine.js';import{artwork}from'./illustrations.js';
 function solve(s){let guard=100;while(correctCount(s.current)!==s.current.tiles.length&&guard--)hint(s);assert.ok(guard>0);}
-test('all 384 pictures have unique IDs, names and seeded artwork',()=>{assert.equal(SCENES.length,384);assert.equal(new Set(SCENES.map(s=>s.id)).size,384);assert.equal(new Set(SCENES.map(s=>s.name)).size,384);const art=SCENES.filter(s=>s.illustrated).map(s=>artwork(s.seed,s.category));assert.equal(new Set(art).size,300);assert.ok(art.every(a=>a.startsWith('<svg')&&a.endsWith('</svg>')));});
+test('all 387 pictures have unique IDs, names and seeded artwork',()=>{assert.equal(SCENES.length,387);assert.equal(new Set(SCENES.map(s=>s.id)).size,387);assert.equal(new Set(SCENES.map(s=>s.name)).size,387);const art=SCENES.filter(s=>s.illustrated).map(s=>artwork(s.seed,s.category));assert.equal(new Set(art).size,300);assert.ok(art.every(a=>a.startsWith('<svg')&&a.endsWith('</svg>')));});
 test('every board size is fully scrambled, valid and solvable by swaps',()=>{for(const d of DIFFICULTIES)for(let seed=0;seed<100;seed++){const a=shuffle(d.n,seeded(seed));assert.equal(new Set(a).size,d.n*d.n);assert.equal(a.filter((v,i)=>v===i).length,0);const s=newState(seed);startPuzzle(s,'harbour',d.n);s.current.tiles=a;solve(s);assert.equal(correctCount(s.current),d.n*d.n);}});
 test('arbitrary swaps work and reject invalid moves',()=>{const s=newState();startPuzzle(s,'cottage',3);const old=[...s.current.tiles];assert.ok(swap(s,0,8));assert.equal(s.current.tiles[0],old[8]);assert.equal(s.current.tiles[8],old[0]);assert.equal(s.current.moves,1);assert.equal(swap(s,-1,2),false);assert.equal(swap(s,0,9),false);assert.equal(swap(s,2,2),false);});
 test('completion pays difficulty tokens once and records completion time',()=>{for(const d of DIFFICULTIES){const s=newState();startPuzzle(s,'harbour',d.n);assert.equal(complete(s,'2026-10-27'),null);s.current.elapsed=73.4;solve(s);assert.equal(complete(s,'2026-10-27').reward,d.reward);assert.equal(s.tokens,d.reward);assert.equal(s.records['harbour-'+d.n].best,73.4);assert.equal(complete(s,'2026-10-27'),null);assert.equal(s.tokens,d.reward);assert.equal(hint(s),false);}});
@@ -22,4 +22,18 @@ test('Poland collection contains 60 credited images, six artists and working acc
  assert.equal(searchScenes('Poland','Chelmonski').length,4);assert.equal(searchScenes('Poland','Wroclaw').length,2);assert.equal(searchScenes('All','Łódź').length,1);
  assert.equal(searchScenes('Cats','Matejko').length,0);
  for(const p of poland){assert.equal(p.country,'Poland');assert.ok(p.creator);assert.match(p.source,/^https:\/\/commons\.wikimedia\.org\/wiki\/File:/);assert.match(p.licenseUrl,/^https:/);assert.ok(p.license);assert.ok(p.imageWidth>0&&p.imageHeight>0);assert.ok(Math.abs(p.aspectRatio-p.imageWidth/p.imageHeight)<0.000001);const s=newState();startPuzzle(s,p.id,3);solve(s);assert.equal(complete(s,'2026-10-28').reward,30);const restored=restoreState(JSON.stringify(s));assert.equal(restored.current.scene,p.id);assert.equal(restored.tokens,30);}
+});
+
+
+test('Very Hard textures offer 36 and 64 cards, with accurate collection totals',()=>{
+ const pics=searchScenes('Very Hard');assert.deepEqual(pics.map(p=>p.id),['vh-beans','vh-grass','vh-sand']);assert.equal(CHALLENGE_COUNT,1542);
+ assert.deepEqual(difficultiesFor('harbour'),DIFFICULTIES);assert.deepEqual(difficultiesFor('missing'),[]);
+ for(const p of pics){assert.equal(recommendedSize(newState(),p),8);assert.deepEqual(difficultiesFor(p),VERY_HARD_DIFFICULTIES);assert.throws(()=>startPuzzle(newState(),p.id,3));}
+ assert.throws(()=>startPuzzle(newState(),'harbour',8));
+});
+test('64-card textures shuffle, swap, save, solve and pay once; resets retain their badges and times',()=>{
+ for(const p of searchScenes('Very Hard'))for(const d of difficultiesFor(p))for(let seed=0;seed<20;seed++){
+  const s=newState(seed);startPuzzle(s,p.id,d.n);s.current.tiles=shuffle(d.n,seeded(seed));assert.equal(correctCount(s.current),0);assert.equal(new Set(s.current.tiles).size,d.n*d.n);
+  const before=[...s.current.tiles];assert.ok(swap(s,0,d.n*d.n-1));assert.equal(s.current.tiles[0],before.at(-1));tick(s,1.5);const restored=restoreState(JSON.stringify(s));assert.deepEqual(restored,s);solve(restored);const result=complete(restored,'2026-10-28');assert.equal(result.reward,d.reward);assert.equal(restored.records[p.id+'-'+d.n].best,1.5);assert.equal(complete(restored,'2026-10-28'),null);resetRun(restored);assert.equal(restored.tokens,d.reward);assert.equal(restored.album[p.id+'-'+d.n],true);assert.equal(restored.records[p.id+'-'+d.n].best,1.5);
+ }
 });
