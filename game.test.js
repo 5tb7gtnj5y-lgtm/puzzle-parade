@@ -1,6 +1,6 @@
-import test from'node:test';import assert from'node:assert/strict';import{SCENES,DIFFICULTIES,VERY_HARD_DIFFICULTIES,difficultiesFor,recommendedSize,CHALLENGE_COUNT,newState,restoreState,startPuzzle,shuffle,seeded,swap,hint,complete,resetRun,tick,leagueIndex,standings,correctCount,searchScenes}from'./engine.js';import{artwork}from'./illustrations.js';
+import test from'node:test';import assert from'node:assert/strict';import{SCENES,DIFFICULTIES,VERY_HARD_DIFFICULTIES,difficultiesFor,recommendedSize,CHALLENGE_COUNT,newState,restoreState,startPuzzle,shuffle,seeded,swap,hint,complete,resetRun,tick,leagueIndex,standings,correctCount,searchScenes,isLocked}from'./engine.js';import{artwork}from'./illustrations.js';
 function solve(s){let guard=100;while(correctCount(s.current)!==s.current.tiles.length&&guard--)hint(s);assert.ok(guard>0);}
-test('all 387 pictures have unique IDs, names and seeded artwork',()=>{assert.equal(SCENES.length,387);assert.equal(new Set(SCENES.map(s=>s.id)).size,387);assert.equal(new Set(SCENES.map(s=>s.name)).size,387);const art=SCENES.filter(s=>s.illustrated).map(s=>artwork(s.seed,s.category));assert.equal(new Set(art).size,300);assert.ok(art.every(a=>a.startsWith('<svg')&&a.endsWith('</svg>')));});
+test('all 395 pictures have unique IDs, names and seeded artwork',()=>{assert.equal(SCENES.length,395);assert.equal(new Set(SCENES.map(s=>s.id)).size,395);assert.equal(new Set(SCENES.map(s=>s.name)).size,395);const art=SCENES.filter(s=>s.illustrated).map(s=>artwork(s.seed,s.category));assert.equal(new Set(art).size,300);assert.ok(art.every(a=>a.startsWith('<svg')&&a.endsWith('</svg>')));});
 test('every board size is fully scrambled, valid and solvable by swaps',()=>{for(const d of DIFFICULTIES)for(let seed=0;seed<100;seed++){const a=shuffle(d.n,seeded(seed));assert.equal(new Set(a).size,d.n*d.n);assert.equal(a.filter((v,i)=>v===i).length,0);const s=newState(seed);startPuzzle(s,'harbour',d.n);s.current.tiles=a;solve(s);assert.equal(correctCount(s.current),d.n*d.n);}});
 test('arbitrary swaps work and reject invalid moves',()=>{const s=newState();startPuzzle(s,'cottage',3);const old=[...s.current.tiles];assert.ok(swap(s,0,8));assert.equal(s.current.tiles[0],old[8]);assert.equal(s.current.tiles[8],old[0]);assert.equal(s.current.moves,1);assert.equal(swap(s,-1,2),false);assert.equal(swap(s,0,9),false);assert.equal(swap(s,2,2),false);});
 test('completion pays difficulty tokens once and records completion time',()=>{for(const d of DIFFICULTIES){const s=newState();startPuzzle(s,'harbour',d.n);assert.equal(complete(s,'2026-10-27'),null);s.current.elapsed=73.4;solve(s);assert.equal(complete(s,'2026-10-27').reward,d.reward);assert.equal(s.tokens,d.reward);assert.equal(s.records['harbour-'+d.n].best,73.4);assert.equal(complete(s,'2026-10-27'),null);assert.equal(s.tokens,d.reward);assert.equal(hint(s),false);}});
@@ -26,7 +26,7 @@ test('Poland collection contains 60 credited images, six artists and working acc
 
 
 test('Very Hard textures offer 36 and 64 cards, with accurate collection totals',()=>{
- const pics=searchScenes('Very Hard');assert.deepEqual(pics.map(p=>p.id),['vh-beans','vh-grass','vh-sand']);assert.equal(CHALLENGE_COUNT,1542);
+ const pics=searchScenes('Very Hard');assert.equal(pics.length,11);assert.deepEqual(pics.slice(0,3).map(p=>p.id),['vh-beans','vh-grass','vh-sand']);assert.ok(['vh-sky','vh-pasta','vh-rice','vh-popcorn','vh-steel-washers','vh-steel-nuts','vh-wood-blocks','vh-wood-rings'].every(id=>pics.some(p=>p.id===id)));assert.equal(CHALLENGE_COUNT,1558);
  assert.deepEqual(difficultiesFor('harbour'),DIFFICULTIES);assert.deepEqual(difficultiesFor('missing'),[]);
  for(const p of pics){assert.equal(recommendedSize(newState(),p),8);assert.deepEqual(difficultiesFor(p),VERY_HARD_DIFFICULTIES);assert.throws(()=>startPuzzle(newState(),p.id,3));}
  assert.throws(()=>startPuzzle(newState(),'harbour',8));
@@ -35,5 +35,25 @@ test('64-card textures shuffle, swap, save, solve and pay once; resets retain th
  for(const p of searchScenes('Very Hard'))for(const d of difficultiesFor(p))for(let seed=0;seed<20;seed++){
   const s=newState(seed);startPuzzle(s,p.id,d.n);s.current.tiles=shuffle(d.n,seeded(seed));assert.equal(correctCount(s.current),0);assert.equal(new Set(s.current.tiles).size,d.n*d.n);
   const before=[...s.current.tiles];assert.ok(swap(s,0,d.n*d.n-1));assert.equal(s.current.tiles[0],before.at(-1));tick(s,1.5);const restored=restoreState(JSON.stringify(s));assert.deepEqual(restored,s);solve(restored);const result=complete(restored,'2026-10-28');assert.equal(result.reward,d.reward);assert.equal(restored.records[p.id+'-'+d.n].best,1.5);assert.equal(complete(restored,'2026-10-28'),null);resetRun(restored);assert.equal(restored.tokens,d.reward);assert.equal(restored.album[p.id+'-'+d.n],true);assert.equal(restored.records[p.id+'-'+d.n].best,1.5);
+ }
+});
+
+
+test('correct-piece locking prevents moving or replacing a fixed tile, and unlocks immediately',()=>{
+ const s=newState();startPuzzle(s,'harbour',3);s.current.tiles=[0,2,1,3,4,5,6,7,8];s.lockCorrect=true;
+ assert.equal(isLocked(s,0),true);assert.equal(isLocked(s,1),false);assert.equal(isLocked(s,-1),false);assert.equal(isLocked(s,99),false);
+ const before=[...s.current.tiles];assert.equal(swap(s,0,1),false);assert.equal(swap(s,1,0),false);assert.deepEqual(s.current.tiles,before);assert.equal(s.current.moves,0);
+ assert.equal(swap(s,1,2),true);assert.equal(isLocked(s,1),true);assert.equal(isLocked(s,2),true);assert.equal(swap(s,1,2),false);
+ s.lockCorrect=false;assert.equal(isLocked(s,1),false);assert.equal(swap(s,1,2),true);assert.equal(s.current.moves,2);
+});
+test('lock preference and derived locks survive reloads and new runs; old saves default to unlocked',()=>{
+ const s=newState();s.tokens=123;startPuzzle(s,'vh-sky',8);s.lockCorrect=true;hint(s);s.current.elapsed=17;const restored=restoreState(JSON.stringify(s));assert.deepEqual(restored,s);assert.equal(isLocked(restored,0),true);resetRun(restored);assert.equal(restored.lockCorrect,true);assert.equal(restored.tokens,123);startPuzzle(restored,'harbour',3);assert.equal(restored.lockCorrect,true);
+ const old={...s};delete old.lockCorrect;assert.equal(restoreState(JSON.stringify(old)).lockCorrect,false);old.lockCorrect='yes';assert.equal(restoreState(JSON.stringify(old)).lockCorrect,false);
+});
+test('hints preserve every locked piece and all board sizes remain solvable with locking on',()=>{
+ for(const [id,n] of [['harbour',3],['harbour',4],['harbour',5],['harbour',6],['vh-sky',8]])for(let seed=0;seed<20;seed++){
+  const s=newState(seed);s.lockCorrect=true;startPuzzle(s,id,n);s.current.tiles=shuffle(n,seeded(seed));let guard=100;
+  while(correctCount(s.current)<n*n&&guard--){const locked=s.current.tiles.map((v,i)=>v===i?i:-1).filter(i=>i>=0);const count=correctCount(s.current);assert.equal(hint(s),true);assert.ok(correctCount(s.current)>count);assert.ok(locked.every(i=>s.current.tiles[i]===i));}
+  assert.ok(guard>0);assert.equal(complete(s,'2026-10-29').reward,difficultiesFor(id).find(d=>d.n===n).reward);
  }
 });

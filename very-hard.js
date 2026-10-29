@@ -16,5 +16,53 @@ export const VERY_HARD_SCENES=[
     "name": "Nothing but sand",
     "category": "Very Hard",
     "tag": "THE TEXTURE CHALLENGE"
+  },
+  {
+    "id": "vh-sky",
+    "name": "Blue sky",
+    "category": "Very Hard",
+    "tag": "THE TEXTURE CHALLENGE"
+  },
+  {
+    "id": "vh-pasta",
+    "name": "Spaghetti tangle",
+    "category": "Very Hard",
+    "tag": "THE TEXTURE CHALLENGE"
+  },
+  {
+    "id": "vh-rice",
+    "name": "A thousand grains of rice",
+    "category": "Very Hard",
+    "tag": "THE TEXTURE CHALLENGE"
+  },
+  {
+    "id": "vh-popcorn",
+    "name": "Popcorn mountain",
+    "category": "Very Hard",
+    "tag": "THE TEXTURE CHALLENGE"
+  },
+  {
+    "id": "vh-steel-washers",
+    "name": "Steel circles",
+    "category": "Very Hard",
+    "tag": "THE TEXTURE CHALLENGE"
+  },
+  {
+    "id": "vh-steel-nuts",
+    "name": "Heavy metal hexagons",
+    "category": "Very Hard",
+    "tag": "THE TEXTURE CHALLENGE"
+  },
+  {
+    "id": "vh-wood-blocks",
+    "name": "Wooden squares",
+    "category": "Very Hard",
+    "tag": "THE TEXTURE CHALLENGE"
+  },
+  {
+    "id": "vh-wood-rings",
+    "name": "Woodland circles",
+    "category": "Very Hard",
+    "tag": "THE TEXTURE CHALLENGE"
   }
 ];
